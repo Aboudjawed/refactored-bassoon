@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>البطاقة الإلكترونية لمعلومات المؤسسات وبيانات الأساتذة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a6db5;
+            --primary-dark: #14568a;
+            --primary-light: #e8f2fa;
+            --accent: #e8a817;
+            --bg: #f5f6f8;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --text-light: #5a6c7d;
+            --border: #e0e5ec;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+            --shadow-hover: 0 12px 36px rgba(0, 0, 0, 0.13);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient: linear-gradient(135deg, #1a6db5 0%, #1e8ad4 100%);
+            --pulse-color: rgba(26, 109, 181, 0.15);
+            --separator-glow: #1a6db5;
+            --badge-bg: #1a6db5;
+            --btn-3d-shadow: #0f4c7a;
+        }
+
+        /* Theme 2: Green */
+        body.theme-green {
+            --primary: #0d8c6d;
+            --primary-dark: #096b53;
+            --primary-light: #e6f7f2;
+            --accent: #c9a018;
+            --gradient: linear-gradient(135deg, #0d8c6d 0%, #10b38a 100%);
+            --pulse-color: rgba(13, 140, 109, 0.15);
+            --separator-glow: #0d8c6d;
+            --badge-bg: #0d8c6d;
+            --btn-3d-shadow: #075240;
+        }
+
+        /* Theme 3: Deep Purple */
+        body.theme-purple {
+            --primary: #6b3fa0;
+            --primary-dark: #52307d;
+            --primary-light: #f3edfa;
+            --accent: #d4841a;
+            --gradient: linear-gradient(135deg, #6b3fa0 0%, #8b5cc4 100%);
+            --pulse-color: rgba(107, 63, 160, 0.15);
+            --separator-glow: #6b3fa0;
+            --badge-bg: #6b3fa0;
+            --btn-3d-shadow: #3d1f5e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Almarai', 'Segoe UI', Tahoma, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background 0.4s ease, color 0.4s ease;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            direction: rtl;
+        }
+        body.ltr {
+            direction: ltr;
+        }
+
+        /* Welcome Screen */
+        #welcomeOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: linear-gradient(135deg, #0a1628 0%, #0f2847 40%, #132f52 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.7s ease, visibility 0.7s ease;
+        }
+        #welcomeOverlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .welcome-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #fff;
+            animation: welcomePulse 1.8s ease-in-out infinite;
+            margin-bottom: 24px;
+            box-shadow: 0 0 60px rgba(26, 109, 181, 0.5);
+        }
+        @keyframes welcomePulse {
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 60px rgba(26, 109, 181, 0.5);
+            }
+            50% {
+                transform: scale(1.08);
+                box-shadow: 0 0 90px rgba(26, 109, 181, 0.8);
+            }
+        }
+        .welcome-title {
+            color: #fff;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-align: center;
+            animation: fadeInUp 1s ease forwards;
+            margin-bottom: 8px;
+        }
+        .welcome-subtitle {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 1.05rem;
+            animation: fadeInUp 1s ease 0.3s forwards;
+            opacity: 0;
+            animation-fill-mode: forwards;
+            margin-bottom: 28px;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .welcome-btn {
+            padding: 14px 48px;
+            background: #fff;
+            color: #132f52;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Almarai', sans-serif;
+            animation: fadeInUp 1s ease 0.55s forwards;
+            opacity: 0;
+            animation-fill-mode: forwards;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+        .welcome-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(255, 255, 255, 0.25);
+            background: #f0f4ff;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 16px 20px 40px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .main-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Header */
+        .platform-header {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 18px 24px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            border: 1px solid var(--border);
+            position: relative;
+            transition: all var(--transition);
+            animation: headerGlow 3s ease-in-out infinite;
+        }
+        @keyframes headerGlow {
+            0%,
+            100% {
+                box-shadow: var(--shadow);
+            }
+            50% {
+                box-shadow: 0 6px 28px var(--pulse-color);
+            }
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .logo-upload-wrap {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.35s ease;
+            flex-shrink: 0;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-upload-wrap:hover {
+            width: 82px;
+            height: 82px;
+            border-color: var(--accent);
+            box-shadow: 0 0 28px var(--pulse-color);
+            z-index: 5;
+        }
+        .logo-upload-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.35s ease;
+        }
+        .logo-upload-placeholder {
+            font-size: 28px;
+            color: var(--primary);
+            pointer-events: none;
+        }
+        .logo-upload-wrap input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .header-title-area {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .header-main-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            letter-spacing: 0.5px;
+            animation: titleShimmer 3s ease-in-out infinite;
+        }
+        @keyframes titleShimmer {
+            0%,
+            100% {
+                color: var(--primary-dark);
+            }
+            50% {
+                color: var(--primary);
+            }
+        }
+        .header-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        /* Theme Switcher */
+        .theme-switcher {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .theme-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .theme-dot:hover {
+            transform: scale(1.2);
+            border-color: #fff;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+        }
+        .theme-dot.active {
+            border-color: #fff;
+            box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.35);
+        }
+        .theme-dot.blue {
+            background: linear-gradient(135deg, #1a6db5, #1e8ad4);
+        }
+        .theme-dot.green {
+            background: linear-gradient(135deg, #0d8c6d, #10b38a);
+        }
+        .theme-dot.purple {
+            background: linear-gradient(135deg, #6b3fa0, #8b5cc4);
+        }
+
+        /* Translation Buttons */
+        .lang-btns {
+            display: flex;
+            gap: 6px;
+        }
+        .lang-btn {
+            padding: 8px 15px;
+            border-radius: 24px;
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            font-family: 'Almarai', sans-serif;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+        .lang-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .lang-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 16px var(--pulse-color);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 14px 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            border: 1px solid var(--border);
+            animation: panelSlideIn 0.6s ease forwards;
+        }
+        @keyframes panelSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .ctrl-btn {
+            padding: 11px 22px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            font-family: 'Almarai', sans-serif;
+            letter-spacing: 0.4px;
+            transition: all 0.25s ease;
+            position: relative;
+            color: #fff;
+            background: var(--primary);
+            box-shadow: 0 5px 0 var(--btn-3d-shadow), 0 6px 16px rgba(0, 0, 0, 0.12);
+            transform: translateY(0);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .ctrl-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 var(--btn-3d-shadow), 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+        .ctrl-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 7px 0 var(--btn-3d-shadow), 0 8px 22px rgba(0, 0, 0, 0.16);
+        }
+        .ctrl-btn.save-btn {
+            background: #27ae60;
+            box-shadow: 0 5px 0 #1a7a40, 0 6px 16px rgba(39, 174, 96, 0.2);
+        }
+        .ctrl-btn.clear-btn {
+            background: #e74c3c;
+            box-shadow: 0 5px 0 #a93226, 0 6px 16px rgba(231, 76, 60, 0.2);
+        }
+        .ctrl-btn.print-btn {
+            background: #8e44ad;
+            box-shadow: 0 5px 0 #5f2b77, 0 6px 16px rgba(142, 68, 173, 0.2);
+        }
+        .ctrl-btn.close-btn {
+            background: #636e72;
+            box-shadow: 0 5px 0 #3d4547, 0 6px 16px rgba(99, 110, 114, 0.2);
+        }
+        .ctrl-btn.refresh-btn {
+            background: #f39c12;
+            box-shadow: 0 5px 0 #b8760d, 0 6px 16px rgba(243, 156, 18, 0.2);
+        }
+
+        /* Section Card */
+        .section-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            animation: cardAppear 0.5s ease forwards;
+            position: relative;
+            overflow: visible;
+        }
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .section-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+        .section-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            animation: titlePulse 2.5s ease-in-out infinite;
+        }
+        @keyframes titlePulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.75;
+            }
+        }
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--badge-bg);
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+        @keyframes badgePulse {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 var(--pulse-color);
+            }
+            50% {
+                box-shadow: 0 0 0 14px transparent;
+            }
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 12px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-group label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text);
+            letter-spacing: 0.3px;
+        }
+        .form-group input,
+        .form-group select {
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--border);
+            font-family: 'Almarai', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+            color: var(--text);
+            width: 100%;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--pulse-color);
+            background: #fff;
+        }
+
+        /* Teacher Photo */
+        .teacher-photo-wrap {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.35s ease;
+            margin: 0 auto 10px;
+            position: relative;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .teacher-photo-wrap:hover {
+            width: 96px;
+            height: 96px;
+            border-color: var(--accent);
+            box-shadow: 0 0 24px var(--pulse-color);
+            z-index: 5;
+        }
+        .teacher-photo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .teacher-photo-placeholder {
+            font-size: 30px;
+            color: var(--primary);
+            pointer-events: none;
+        }
+        .teacher-photo-wrap input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Schedule Table */
+        .schedule-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 8px;
+        }
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+            font-size: 0.82rem;
+        }
+        .schedule-table th,
+        .schedule-table td {
+            border: 1px solid var(--border);
+            padding: 6px 5px;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+        .schedule-table th {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.78rem;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .schedule-table td input {
+            width: 100%;
+            min-width: 70px;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-family: 'Almarai', sans-serif;
+            font-size: 0.8rem;
+            padding: 4px;
+            color: var(--text);
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+        .schedule-table td input:focus {
+            outline: none;
+            background: var(--primary-light);
+            box-shadow: inset 0 0 0 2px var(--primary);
+        }
+        .schedule-table .day-label {
+            font-weight: 700;
+            background: #f8fafc;
+            color: var(--primary-dark);
+            white-space: nowrap;
+            text-align: center;
+            min-width: 70px;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Almarai', sans-serif;
+            flex-shrink: 0;
+        }
+        .delete-btn {
+            background: #ffeaea;
+            color: #e74c3c;
+            border-color: #f5c6cb;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 3;
+        }
+        .delete-btn:hover {
+            background: #e74c3c;
+            color: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 4px 14px rgba(231, 76, 60, 0.3);
+        }
+        .add-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+            font-size: 1.3rem;
+            margin: 10px auto 0;
+            display: flex;
+            width: 44px;
+            height: 44px;
+            transition: all 0.3s ease;
+        }
+        .add-btn:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: scale(1.15);
+            box-shadow: 0 6px 20px var(--pulse-color);
+        }
+
+        /* Animated Separator */
+        .animated-separator {
+            height: 5px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, transparent, var(--separator-glow), var(--accent), var(--separator-glow), transparent);
+            margin: 20px 0;
+            animation: separatorShimmer 2.5s ease-in-out infinite;
+            background-size: 200% 100%;
+            position: relative;
+        }
+        @keyframes separatorShimmer {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        /* Footer */
+        .platform-footer {
+            text-align: center;
+            padding: 16px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            letter-spacing: 0.5px;
+            animation: footerGlow 3s ease-in-out infinite;
+        }
+        @keyframes footerGlow {
+            0%,
+            100% {
+                color: var(--text-light);
+            }
+            50% {
+                color: var(--primary);
+            }
+        }
+
+        /* Scroll To Top */
+        #scrollToTop {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            z-index: 900;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.35s ease;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #scrollToTop.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        #scrollToTop:hover {
+            transform: translateY(-5px) scale(1.08);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+            background: var(--accent);
+        }
+
+        /* Loading Overlay */
+        #loadingOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        #loadingOverlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .loader-spinner {
+            width: 56px;
+            height: 56px;
+            border: 5px solid rgba(255, 255, 255, 0.25);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .loading-text {
+            color: #fff;
+            margin-top: 16px;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+        /* Close Overlay */
+        #closeOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        #closeOverlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .close-countdown {
+            font-size: 5rem;
+            font-weight: 800;
+            color: #fff;
+            animation: countdownPulse 1s ease-in-out infinite;
+        }
+        @keyframes countdownPulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+                color: #e74c3c;
+            }
+        }
+        .close-message {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: #fff !important;
+            }
+            .section-card {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .control-panel,
+            #scrollToTop,
+            .delete-btn,
+            .add-btn,
+            .theme-switcher,
+            .lang-btns,
+            .logo-upload-wrap input,
+            .teacher-photo-wrap input,
+            #welcomeOverlay,
+            #loadingOverlay,
+            #closeOverlay,
+            .animated-separator {
+                display: none !important;
+            }
+            .schedule-table-wrap {
+                overflow-x: visible;
+            }
+            .schedule-table {
+                min-width: auto;
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .platform-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .header-right,
+            .header-left {
+                width: 100%;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .control-panel {
+                gap: 8px;
+                padding: 10px 12px;
+            }
+            .ctrl-btn {
+                padding: 8px 14px;
+                font-size: 0.78rem;
+                border-radius: 22px;
+            }
+            .schedule-table {
+                min-width: 700px;
+                font-size: 0.7rem;
+            }
+            .section-card {
+                padding: 14px 10px;
+            }
+            .delete-btn {
+                top: 8px;
+                right: 8px;
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .header-main-title {
+                font-size: 1rem;
+            }
+            .ctrl-btn {
+                padding: 7px 10px;
+                font-size: 0.7rem;
+                gap: 3px;
+            }
+            .lang-btn {
+                padding: 6px 10px;
+                font-size: 0.7rem;
+            }
+            .theme-dot {
+                width: 26px;
+                height: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Welcome Overlay -->
+    <div id="welcomeOverlay">
+        <div class="welcome-logo">🏫</div>
+        <div class="welcome-title">البطاقة الإلكترونية</div>
+        <div class="welcome-subtitle">لمعلومات المؤسسات وبيانات الأساتذة</div>
+        <button class="welcome-btn" onclick="closeWelcome()">🚀 دخول المنصة</button>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay">
+        <div class="loader-spinner"></div>
+        <div class="loading-text" id="loadingText">جاري الحفظ...</div>
+    </div>
+
+    <!-- Close Overlay -->
+    <div id="closeOverlay">
+        <div class="close-countdown" id="closeCountdown">5</div>
+        <div class="close-message">سيتم الإغلاق خلال ثوانٍ...</div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container" id="mainContainer">
+        <!-- Header -->
+        <div class="platform-header">
+            <div class="header-right">
+                <div class="logo-upload-wrap" id="institutionLogoWrap" title="حمّل صورة المؤسسة - مرر المؤشر لتكبيرها">
+                    <span class="logo-upload-placeholder">🏛️</span>
+                    <img id="institutionLogoImg" src="" alt="شعار المؤسسة" style="display:none;">
+                    <input type="file" id="institutionLogoInput" accept="image/*" onchange="handleInstitutionLogo(event)">
+                </div>
+                <div class="header-title-area">
+                    <span class="header-main-title" data-key="platformTitle">البطاقة الإلكترونية لمعلومات المؤسسات وبيانات الأساتذة</span>
+                    <span class="header-subtitle" data-key="platformSubtitle">منصة رقمية احترافية متكاملة</span>
+                </div>
+            </div>
+            <div class="header-left">
+                <div class="theme-switcher">
+                    <span style="font-size:0.8rem;font-weight:700;color:var(--text-light);" data-key="themeLabel">الثيم:</span>
+                    <div class="theme-dot blue active" data-theme="default" onclick="switchTheme('default', this)" title="الثيم الأزرق"></div>
+                    <div class="theme-dot green" data-theme="green" onclick="switchTheme('green', this)" title="الثيم الأخضر"></div>
+                    <div class="theme-dot purple" data-theme="purple" onclick="switchTheme('purple', this)" title="الثيم البنفسجي"></div>
+                </div>
+                <div class="lang-btns">
+                    <button class="lang-btn active" data-lang="ar" onclick="switchLanguage('ar', this)" title="العربية">AR</button>
+                    <button class="lang-btn" data-lang="en" onclick="switchLanguage('en', this)" title="English">ENG</button>
+                    <button class="lang-btn" data-lang="fr" onclick="switchLanguage('fr', this)" title="Français">FR</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel" id="controlPanel">
+            <button class="ctrl-btn refresh-btn" onclick="refreshPage()" title="تحديث الصفحة">🔄 <span data-key="btnRefresh">تحديث</span></button>
+            <button class="ctrl-btn save-btn" onclick="saveAllData()" title="حفظ جميع البيانات">💾 <span data-key="btnSave">حفظ</span></button>
+            <button class="ctrl-btn clear-btn" onclick="clearAllData()" title="مسح جميع البيانات">🗑️ <span data-key="btnClear">مسح</span></button>
+            <button class="ctrl-btn print-btn" onclick="printPage()" title="طباعة">🖨️ <span data-key="btnPrint">طباعة</span></button>
+            <button class="ctrl-btn close-btn" onclick="initiateClose()" title="إغلاق">🚪 <span data-key="btnClose">إغلاق</span></button>
+        </div>
+
+        <!-- Institution Data Table -->
+        <div class="section-card" id="institutionCard">
+            <div class="section-title">
+                <span class="section-badge">🏫</span>
+                <span data-key="institutionTitle">بيانات ومعلومات المؤسسة</span>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label data-key="inspectorName">اسم المفتش(ة)</label>
+                    <input type="text" id="inspectorName" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label data-key="directorName">اسم المدير(ة)</label>
+                    <input type="text" id="directorName" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label data-key="institutionName">اسم المؤسسة</label>
+                    <input type="text" id="institutionName" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label data-key="systemLabel">النظام</label>
+                    <select id="systemSelect" data-translate-options="true">
+                        <option value="داخلي">داخلي</option>
+                        <option value="خارجي">خارجي</option>
+                        <option value="نصف داخلي">نصف داخلي</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-key="levelLabel">الطور التعليمي</label>
+                    <select id="levelSelect" data-translate-options="true">
+                        <option value="ابتدائي">ابتدائي</option>
+                        <option value="متوسط">متوسط</option>
+                        <option value="ثانوي">ثانوي</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-key="subjectLabel">المواد التعليمية</label>
+                    <select id="subjectSelect" data-translate-options="true">
+                        <option value="اللغة العربية">اللغة العربية</option>
+                        <option value="Anglais">Anglais</option>
+                        <option value="Français">Français</option>
+                        <option value="العلوم الإسلامية">العلوم الإسلامية</option>
+                        <option value="الفلسفة">الفلسفة</option>
+                        <option value="التاريخ والجغرافية">التاريخ والجغرافية</option>
+                        <option value="الرياضيات">الرياضيات</option>
+                        <option value="علوم الطبيعة والحياة">علوم الطبيعة والحياة</option>
+                        <option value="العلوم الفيزيائية">العلوم الفيزيائية</option>
+                        <option value="التسيير المالي والمحاسبي">التسيير المالي والمحاسبي</option>
+                        <option value="الهندسة المدنية">الهندسة المدنية</option>
+                        <option value="الهندسة الميكانيكية">الهندسة الميكانيكية</option>
+                        <option value="الهندسة الكهربائية">الهندسة الكهربائية</option>
+                        <option value="هندسة الطرائق">هندسة الطرائق</option>
+                        <option value="القانون">القانون</option>
+                        <option value="الاقتصاد والمناجمنت">الاقتصاد والمناجمنت</option>
+                        <option value="التكنولوجيا">التكنولوجيا</option>
+                        <option value="التربية الفنية">التربية الفنية</option>
+                        <option value="التربية الأمازيغية">التربية الأمازيغية</option>
+                        <option value="التربية البدنية">التربية البدنية</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label data-key="subjectOfficer">اسم مسؤول المادة</label>
+                    <input type="text" id="subjectOfficer" placeholder="">
+                </div>
+            </div>
+        </div>
+
+        <div class="animated-separator"></div>
+
+        <!-- Teacher + Schedule Pairs Container -->
+        <div id="teacherSchedulePairs">
+            <!-- Pairs will be injected by JS -->
+        </div>
+
+        <!-- Global Add Button -->
+        <div style="text-align:center;margin:10px 0 20px;">
+            <button class="add-btn" id="globalAddBtn" onclick="addTeacherSchedulePair()" title="إضافة جدول أستاذ وتوقيت جديد">＋</button>
+            <div style="font-size:0.8rem;color:var(--text-light);margin-top:4px;" data-key="addPairHint">إضافة زوج جداول (أستاذ + توقيت أسبوعي)</div>
+        </div>
+
+        <!-- Footer -->
+        <div class="platform-footer" data-key="footerText">
+            ⚖️ الحقوق محفوظة للجازولية للتعليم والتكوين . أوت 2025
+        </div>
+    </div>
+
+    <!-- Scroll To Top -->
+    <button id="scrollToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="الانتقال إلى الأعلى">⬆️</button>
+
+    <script>
+        // ==================== GLOBAL STATE ====================
+        let pairCounter = 0;
+        const MAX_PAIRS = 12;
+        let currentLang = 'ar';
+        let currentTheme = 'default';
+        let closeTimerInterval = null;
+
+        // ==================== TRANSLATION MAPS ====================
+        const translations = {
+            ar: {
+                platformTitle: 'البطاقة الإلكترونية لمعلومات المؤسسات وبيانات الأساتذة',
+                platformSubtitle: 'منصة رقمية احترافية متكاملة',
+                themeLabel: 'الثيم:',
+                btnRefresh: 'تحديث',
+                btnSave: 'حفظ',
+                btnClear: 'مسح',
+                btnPrint: 'طباعة',
+                btnClose: 'إغلاق',
+                institutionTitle: 'بيانات ومعلومات المؤسسة',
+                inspectorName: 'اسم المفتش(ة)',
+                directorName: 'اسم المدير(ة)',
+                institutionName: 'اسم المؤسسة',
+                systemLabel: 'النظام',
+                levelLabel: 'الطور التعليمي',
+                subjectLabel: 'المواد التعليمية',
+                subjectOfficer: 'اسم مسؤول المادة',
+                teacherTitle: 'بيانات ومعلومات الأستاذ(ة)',
+                teacherNameLabel: 'اسم ولقب الأستاذ(ة)',
+                teacherPhotoHint: 'حمّل الصورة - مرر المؤشر للتكبير',
+                birthDate: 'تاريخ الميلاد',
+                firstAppointment: 'تاريخ أول تعيين',
+                categoryLabel: 'الصنف',
+                qualificationLabel: 'المؤهل العلمي',
+                gradeNumberLabel: 'رقم الدرجة',
+                gradeDateLabel: 'تاريخ سريان الدرجة',
+                rankLabel: 'الرتبة',
+                lastInspection: 'تاريخ آخر تفتيش',
+                scoreLabel: 'العلامة من /20',
+                scheduleTitle: 'جدول التوقيت الأسبوعي',
+                notes: 'ملاحظات',
+                daySunday: 'الأحد',
+                dayMonday: 'الإثنين',
+                dayTuesday: 'الثلاثاء',
+                dayWednesday: 'الأربعاء',
+                dayThursday: 'الخميس',
+                deleteTooltip: 'حذف هذا الجدول',
+                addPairHint: 'إضافة زوج جداول (أستاذ + توقيت أسبوعي)',
+                footerText: '⚖️ الحقوق محفوظة للجازولية للتعليم والتكوين . أوت 2025',
+                loadingSave: 'جاري الحفظ...',
+                loadingClear: 'جاري المسح...',
+                closeMessage: 'سيتم الإغلاق خلال ثوانٍ...',
+                systemOptions: ['داخلي', 'خارجي', 'نصف داخلي'],
+                levelOptions: ['ابتدائي', 'متوسط', 'ثانوي'],
+                subjectOptions: [
+                    'اللغة العربية', 'Anglais', 'Français', 'العلوم الإسلامية', 'الفلسفة',
+                    'التاريخ والجغرافية', 'الرياضيات', 'علوم الطبيعة والحياة', 'العلوم الفيزيائية',
+                    'التسيير المالي والمحاسبي', 'الهندسة المدنية', 'الهندسة الميكانيكية',
+                    'الهندسة الكهربائية', 'هندسة الطرائق', 'القانون', 'الاقتصاد والمناجمنت',
+                    'التكنولوجيا', 'التربية الفنية', 'التربية الأمازيغية', 'التربية البدنية'
+                ],
+                categoryOptions: ['13', '14', '16', '17'],
+                qualificationOptions: ['دكتوراه', 'ماجستير', 'ماستر', 'ليسانس'],
+                gradeOptions: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                rankOptions: [
+                    'أستاذ(ة) التعليم الابتدائي', 'أستاذ(ة) التعليم الابتدائي قسم أوّل',
+                    'أستاذ(ة) التعليم الابتدائي قسم ثان', 'أستاذ(ة) التعليم الابتدائي مميز(ة)',
+                    'أستاذ(ة) التعليم الابتدائي متعاقد(ة)', 'أستاذ(ة) التعليم المتوسط',
+                    'أستاذ(ة) التعليم المتوسط قسم أول', 'أستاذ(ة) التعليم المتوسط قسم ثان',
+                    'أستاذ(ة) التعليم المتوسط مميز(ة)', 'أستاذ(ة) التعليم المتوسط متعاقد(ة)',
+                    'أستاذ(ة) التعليم الثانوي', 'أستاذ(ة) التعليم الثانوي قسم أوّل',
+                    'أستاذ(ة) التعليم الثانوي قسم ثان', 'أستاذ(ة) التعليم الثانويّ مميز(ة)',
+                    'أستاذ(ة) التعليم الثانوي متعاقد(ة)'
+                ]
+            },
+            en: {
+                platformTitle: 'Electronic Card for Institution Information & Teacher Data',
+                platformSubtitle: 'Integrated Professional Digital Platform',
+                themeLabel: 'Theme:',
+                btnRefresh: 'Refresh',
+                btnSave: 'Save',
+                btnClear: 'Clear',
+                btnPrint: 'Print',
+                btnClose: 'Close',
+                institutionTitle: 'Institution Information & Data',
+                inspectorName: 'Inspector Name',
+                directorName: 'Director Name',
+                institutionName: 'Institution Name',
+                systemLabel: 'System',
+                levelLabel: 'Educational Level',
+                subjectLabel: 'Educational Subject',
+                subjectOfficer: 'Subject Officer Name',
+                teacherTitle: 'Teacher Information & Data',
+                teacherNameLabel: 'Teacher Full Name',
+                teacherPhotoHint: 'Upload photo - hover to enlarge',
+                birthDate: 'Date of Birth',
+                firstAppointment: 'First Appointment Date',
+                categoryLabel: 'Category',
+                qualificationLabel: 'Academic Qualification',
+                gradeNumberLabel: 'Grade Number',
+                gradeDateLabel: 'Grade Effective Date',
+                rankLabel: 'Rank',
+                lastInspection: 'Last Inspection Date',
+                scoreLabel: 'Score out of /20',
+                scheduleTitle: 'Weekly Schedule',
+                notes: 'Notes',
+                daySunday: 'Sunday',
+                dayMonday: 'Monday',
+                dayTuesday: 'Tuesday',
+                dayWednesday: 'Wednesday',
+                dayThursday: 'Thursday',
+                deleteTooltip: 'Delete this table',
+                addPairHint: 'Add Teacher + Schedule Pair',
+                footerText: '⚖️ All rights reserved for El-Gazoulia Education & Training. August 2025',
+                loadingSave: 'Saving...',
+                loadingClear: 'Clearing...',
+                closeMessage: 'Closing in a few seconds...',
+                systemOptions: ['Internal', 'External', 'Semi-internal'],
+                levelOptions: ['Primary', 'Middle', 'Secondary'],
+                subjectOptions: [
+                    'Arabic Language', 'English', 'French', 'Islamic Sciences', 'Philosophy',
+                    'History & Geography', 'Mathematics', 'Natural & Life Sciences', 'Physical Sciences',
+                    'Financial & Accounting Management', 'Civil Engineering', 'Mechanical Engineering',
+                    'Electrical Engineering', 'Process Engineering', 'Law', 'Economics & Management',
+                    'Technology', 'Art Education', 'Amazigh Education', 'Physical Education'
+                ],
+                categoryOptions: ['13', '14', '16', '17'],
+                qualificationOptions: ['Doctorate', 'Master (Research)', 'Master (Professional)', 'Bachelor'],
+                gradeOptions: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                rankOptions: [
+                    'Primary Education Teacher', 'Primary Education Teacher 1st Class',
+                    'Primary Education Teacher 2nd Class', 'Primary Education Teacher Distinguished',
+                    'Primary Education Teacher Contractual', 'Middle Education Teacher',
+                    'Middle Education Teacher 1st Class', 'Middle Education Teacher 2nd Class',
+                    'Middle Education Teacher Distinguished', 'Middle Education Teacher Contractual',
+                    'Secondary Education Teacher', 'Secondary Education Teacher 1st Class',
+                    'Secondary Education Teacher 2nd Class', 'Secondary Education Teacher Distinguished',
+                    'Secondary Education Teacher Contractual'
+                ]
+            },
+            fr: {
+                platformTitle: 'Carte Électronique des Informations d\'Établissement et Données des Enseignants',
+                platformSubtitle: 'Plateforme Numérique Professionnelle Intégrée',
+                themeLabel: 'Thème :',
+                btnRefresh: 'Actualiser',
+                btnSave: 'Sauvegarder',
+                btnClear: 'Effacer',
+                btnPrint: 'Imprimer',
+                btnClose: 'Fermer',
+                institutionTitle: 'Informations et Données de l\'Établissement',
+                inspectorName: 'Nom de l\'Inspecteur(trice)',
+                directorName: 'Nom du Directeur(trice)',
+                institutionName: 'Nom de l\'Établissement',
+                systemLabel: 'Régime',
+                levelLabel: 'Niveau d\'Enseignement',
+                subjectLabel: 'Matière d\'Enseignement',
+                subjectOfficer: 'Nom du Responsable de la Matière',
+                teacherTitle: 'Informations et Données de l\'Enseignant(e)',
+                teacherNameLabel: 'Nom et Prénom de l\'Enseignant(e)',
+                teacherPhotoHint: 'Télécharger la photo - survoler pour agrandir',
+                birthDate: 'Date de Naissance',
+                firstAppointment: 'Date de Première Nomination',
+                categoryLabel: 'Catégorie',
+                qualificationLabel: 'Qualification Académique',
+                gradeNumberLabel: 'Numéro de Grade',
+                gradeDateLabel: 'Date d\'Effet du Grade',
+                rankLabel: 'Grade',
+                lastInspection: 'Date de Dernière Inspection',
+                scoreLabel: 'Note sur /20',
+                scheduleTitle: 'Emploi du Temps Hebdomadaire',
+                notes: 'Remarques',
+                daySunday: 'Dimanche',
+                dayMonday: 'Lundi',
+                dayTuesday: 'Mardi',
+                dayWednesday: 'Mercredi',
+                dayThursday: 'Jeudi',
+                deleteTooltip: 'Supprimer ce tableau',
+                addPairHint: 'Ajouter une paire (Enseignant + Emploi du temps)',
+                footerText: '⚖️ Tous droits réservés pour El-Gazoulia Éducation & Formation. Août 2025',
+                loadingSave: 'Sauvegarde en cours...',
+                loadingClear: 'Effacement en cours...',
+                closeMessage: 'Fermeture dans quelques secondes...',
+                systemOptions: ['Interne', 'Externe', 'Semi-interne'],
+                levelOptions: ['Primaire', 'Moyen', 'Secondaire'],
+                subjectOptions: [
+                    'Langue Arabe', 'Anglais', 'Français', 'Sciences Islamiques', 'Philosophie',
+                    'Histoire & Géographie', 'Mathématiques', 'Sciences Naturelles & de la Vie',
+                    'Sciences Physiques', 'Gestion Financière & Comptable', 'Génie Civil',
+                    'Génie Mécanique', 'Génie Électrique', 'Génie des Procédés', 'Droit',
+                    'Économie & Management', 'Technologie', 'Éducation Artistique',
+                    'Éducation Amazighe', 'Éducation Physique'
+                ],
+                categoryOptions: ['13', '14', '16', '17'],
+                qualificationOptions: ['Doctorat', 'Magister', 'Master', 'Licence'],
+                gradeOptions: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+                rankOptions: [
+                    'Enseignant(e) du Primaire', 'Enseignant(e) du Primaire 1ère Classe',
+                    'Enseignant(e) du Primaire 2ème Classe', 'Enseignant(e) du Primaire Distingué(e)',
+                    'Enseignant(e) du Primaire Contractuel(le)', 'Enseignant(e) du Moyen',
+                    'Enseignant(e) du Moyen 1ère Classe', 'Enseignant(e) du Moyen 2ème Classe',
+                    'Enseignant(e) du Moyen Distingué(e)', 'Enseignant(e) du Moyen Contractuel(le)',
+                    'Enseignant(e) du Secondaire', 'Enseignant(e) du Secondaire 1ère Classe',
+                    'Enseignant(e) du Secondaire 2ème Classe', 'Enseignant(e) du Secondaire Distingué(e)',
+                    'Enseignant(e) du Secondaire Contractuel(le)'
+                ]
+            }
+        };
+
+        // ==================== DOM READY ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show main container after a tiny delay for welcome screen
+            setTimeout(() => {
+                document.getElementById('mainContainer').classList.add('visible');
+            }, 300);
+
+            // Add first pair
+            addTeacherSchedulePair(false);
+
+            // Scroll to top button
+            const scrollBtn = document.getElementById('scrollToTop');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 400) {
+                    scrollBtn.classList.add('show');
+                } else {
+                    scrollBtn.classList.remove('show');
+                }
+            });
+
+            // Load saved data if any
+            loadAllData();
+        });
+
+        // ==================== WELCOME SCREEN ====================
+        function closeWelcome() {
+            const overlay = document.getElementById('welcomeOverlay');
+            overlay.classList.add('hidden');
+            document.getElementById('mainContainer').classList.add('visible');
+            // Remove overlay after transition
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 700);
+        }
+
+        // ==================== THEME SWITCHING ====================
+        function switchTheme(theme, btn) {
+            document.body.classList.remove('theme-green', 'theme-purple');
+            if (theme === 'green') document.body.classList.add('theme-green');
+            if (theme === 'purple') document.body.classList.add('theme-purple');
+            currentTheme = theme;
+            // Update active dot
+            document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            // Save preference
+            localStorage.setItem('platformTheme', theme);
+        }
+
+        // ==================== LANGUAGE SWITCHING ====================
+        function switchLanguage(lang, btn) {
+            currentLang = lang;
+            // Update direction
+            if (lang === 'ar') {
+                document.body.dir = 'rtl';
+                document.body.classList.remove('ltr');
+                document.documentElement.lang = 'ar';
+                document.documentElement.dir = 'rtl';
+            } else {
+                document.body.dir = 'ltr';
+                document.body.classList.add('ltr');
+                document.documentElement.lang = lang;
+                document.documentElement.dir = 'ltr';
+            }
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            // Translate all data-key elements
+            const t = translations[lang];
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (t[key]) {
+                    el.textContent = t[key];
+                }
+            });
+
+            // Translate dropdown options
+            document.querySelectorAll('select[data-translate-options="true"]').forEach(select => {
+                translateDropdown(select, lang);
+            });
+            // Also translate teacher dropdowns
+            document.querySelectorAll('select[data-translate-options-teacher="true"]').forEach(select => {
+                translateTeacherDropdown(select, lang);
+            });
+
+            // Update all schedule day labels
+            document.querySelectorAll('.day-label-cell').forEach(cell => {
+                const dayKey = cell.getAttribute('data-day-key');
+                if (dayKey && t[dayKey]) {
+                    cell.textContent = t[dayKey];
+                }
+            });
+
+            // Update schedule "Notes" headers
+            document.querySelectorAll('.notes-header-cell').forEach(cell => {
+                cell.textContent = t['notes'] || 'Notes';
+            });
+
+            // Update teacher section titles
+            document.querySelectorAll('.teacher-section-title').forEach(el => {
+                el.childNodes.forEach(node => {
+                    if (node.nodeType === 3 && node.textContent.trim()) {
+                        node.textContent = ' ' + (t['teacherTitle'] || 'Teacher Information & Data') +
+                            ' ';
+                    }
+                });
+            });
+            document.querySelectorAll('.schedule-section-title').forEach(el => {
+                el.childNodes.forEach(node => {
+                    if (node.nodeType === 3 && node.textContent.trim()) {
+                        node.textContent = ' ' + (t['scheduleTitle'] || 'Weekly Schedule') +
+                        ' ';
+                    }
+                });
+            });
+
+            // Update add pair hint
+            const hintEl = document.querySelector('[data-key="addPairHint"]');
+            if (hintEl && t['addPairHint']) hintEl.textContent = t['addPairHint'];
+
+            // Save preference
+            localStorage.setItem('platformLang', lang);
+        }
+
+        function translateDropdown(select, lang) {
+            const t = translations[lang];
+            const selectedValue = select.value;
+            let optionsKey = '';
+            if (select.id === 'systemSelect') optionsKey = 'systemOptions';
+            else if (select.id === 'levelSelect') optionsKey = 'levelOptions';
+            else if (select.id === 'subjectSelect') optionsKey = 'subjectOptions';
+            if (optionsKey && t[optionsKey]) {
+                const opts = t[optionsKey];
+                const arOpts = translations['ar'][optionsKey];
+                for (let i = 0; i < select.options.length; i++) {
+                    if (i < opts.length) {
+                        select.options[i].text = opts[i];
+                        select.options[i].value = arOpts[i]; // keep Arabic value as canonical
+                    }
+                }
+                // Restore selection
+                if (selectedValue) select.value = selectedValue;
+            }
+        }
+
+        function translateTeacherDropdown(select, lang) {
+            const t = translations[lang];
+            let optionsKey = '';
+            if (select.classList.contains('category-select')) optionsKey = 'categoryOptions';
+            else if (select.classList.contains('qualification-select')) optionsKey = 'qualificationOptions';
+            else if (select.classList.contains('grade-select')) optionsKey = 'gradeOptions';
+            else if (select.classList.contains('rank-select')) optionsKey = 'rankOptions';
+            if (optionsKey && t[optionsKey]) {
+                const opts = t[optionsKey];
+                const arOpts = translations['ar'][optionsKey];
+                const selectedVal = select.value;
+                for (let i = 0; i < select.options.length; i++) {
+                    if (i < opts.length) {
+                        select.options[i].text = opts[i];
+                        select.options[i].value = arOpts[i];
+                    }
+                }
+                if (selectedVal) select.value = selectedVal;
+            }
+        }
+
+        // ==================== INSTITUTION LOGO UPLOAD ====================
+        function handleInstitutionLogo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('institutionLogoImg');
+                img.src = e.target.result;
+                img.style.display = 'block';
+                document.querySelector('#institutionLogoWrap .logo-upload-placeholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ==================== TEACHER PHOTO UPLOAD ====================
+        function handleTeacherPhoto(event, pairId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('teacherPhotoImg_' + pairId);
+                if (img) {
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    const placeholder = document.getElementById('teacherPhotoPlaceholder_' + pairId);
+                    if (placeholder) placeholder.style.display = 'none';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ==================== CREATE TEACHER + SCHEDULE PAIR ====================
+        function createTeacherSchedulePairHTML(pairIndex) {
+            const t = translations[currentLang];
+            const pairId = 'pair_' + pairIndex;
+            const html = `
+            <div class="teacher-schedule-pair" id="${pairId}" style="position:relative;">
+              <!-- Teacher Table -->
+              <div class="section-card" style="padding-top:40px;">
+                <button class="action-btn delete-btn" onclick="deletePair('${pairId}')" title="${t['deleteTooltip']||'حذف هذا الجدول'}">✕</button>
+                <div class="section-title teacher-section-title">
+                  <span class="section-badge">👨‍🏫</span>
+                  <span>${t['teacherTitle']||'بيانات ومعلومات الأستاذ(ة)'}</span>
+                  <span style="font-weight:800;color:var(--accent);margin-right:6px;">#${pairIndex}</span>
+                </div>
+                <!-- Teacher Photo -->
+                <div class="teacher-photo-wrap" style="margin:0 auto 12px;" title="${t['teacherPhotoHint']||'حمّل الصورة - مرر المؤشر للتكبير'}">
+                  <span class="teacher-photo-placeholder" id="teacherPhotoPlaceholder_${pairId}">📷</span>
+                  <img id="teacherPhotoImg_${pairId}" src="" alt="صورة الأستاذ" style="display:none;">
+                  <input type="file" accept="image/*" onchange="handleTeacherPhoto(event, '${pairId}')">
+                </div>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>${t['teacherNameLabel']||'اسم ولقب الأستاذ(ة)'}</label>
+                    <input type="text" class="teacher-name" placeholder="">
+                  </div>
+                  <div class="form-group">
+                    <label>${t['birthDate']||'تاريخ الميلاد'}</label>
+                    <input type="text" class="teacher-birthdate" placeholder="YYYY-MM-DD">
+                  </div>
+                  <div class="form-group">
+                    <label>${t['firstAppointment']||'تاريخ أول تعيين'}</label>
+                    <input type="text" class="teacher-firstappt" placeholder="YYYY-MM-DD">
+                  </div>
+                  <div class="form-group">
+                    <label>${t['categoryLabel']||'الصنف'}</label>
+                    <select class="category-select" data-translate-options-teacher="true">
+                      ${(translations['ar']['categoryOptions']).map((opt,i)=>`<option value="${opt}">${(t['categoryOptions']||translations['ar']['categoryOptions'])[i]||opt}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>${t['qualificationLabel']||'المؤهل العلمي'}</label>
+                    <select class="qualification-select" data-translate-options-teacher="true">
+                      ${(translations['ar']['qualificationOptions']).map((opt,i)=>`<option value="${opt}">${(t['qualificationOptions']||translations['ar']['qualificationOptions'])[i]||opt}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>${t['gradeNumberLabel']||'رقم الدرجة'}</label>
+                    <select class="grade-select" data-translate-options-teacher="true">
+                      ${(translations['ar']['gradeOptions']).map((opt,i)=>`<option value="${opt}">${opt}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>${t['gradeDateLabel']||'تاريخ سريان الدرجة'}</label>
+                    <input type="text" class="teacher-gradedate" placeholder="YYYY-MM-DD">
+                  </div>
+                  <div class="form-group">
+                    <label>${t['rankLabel']||'الرتبة'}</label>
+                    <select class="rank-select" data-translate-options-teacher="true">
+                      ${(translations['ar']['rankOptions']).map((opt,i)=>`<option value="${opt}">${(t['rankOptions']||translations['ar']['rankOptions'])[i]||opt}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>${t['lastInspection']||'تاريخ آخر تفتيش'}</label>
+                    <input type="text" class="teacher-lastinsp" placeholder="YYYY-MM-DD">
+                  </div>
+                  <div class="form-group">
+                    <label>${t['scoreLabel']||'العلامة من /20'}</label>
+                    <input type="text" class="teacher-score" placeholder="/20">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Schedule Table -->
+              <div class="section-card">
+                <div class="section-title schedule-section-title">
+                  <span class="section-badge">📅</span>
+                  <span>${t['scheduleTitle']||'جدول التوقيت الأسبوعي'}</span>
+                  <span style="font-weight:800;color:var(--accent);margin-right:6px;">#${pairIndex}</span>
+                </div>
+                <div class="schedule-table-wrap">
+                  <table class="schedule-table">
+                    <thead>
+                      <tr>
+                        <th>⏰</th>
+                        <th>سا 8 ـــ سا 9</th>
+                        <th>سا 9 ـــ سا 10</th>
+                        <th>سا 10 ـــ سا 11</th>
+                        <th>سا 11 ـــ سا 12</th>
+                        <th>سا 14 ـــ سا 15</th>
+                        <th>سا 15 ـــ سا 16</th>
+                        <th>سا 16 ـــ سا 17</th>
+                        <th class="notes-header-cell">${t['notes']||'ملاحظات'}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${['daySunday','dayMonday','dayTuesday','dayWednesday','dayThursday'].map(dayKey=>`
+                      <tr>
+                        <td class="day-label day-label-cell" data-day-key="${dayKey}">${t[dayKey]||translations['ar'][dayKey]}</td>
+                        <td><input type="text" class="sched-cell" placeholder=""></td>
+                        <td><input type="text" class="sched-cell" placeholder=""></td>
+                        <td><input type="text" class="sched-cell" placeholder=""></td>
+                        <td><input type="text" class="sched-cell" placeholder=""></td>
+                        <td><input type="text" class="sched-cell" placeholder=""></td>
+                        <td><input type="text" class="sched-cell" placeholder=""></td>
+                        <td><input type="text" class="sched-cell" placeholder=""></td>
+                        <td><input type="text" class="sched-cell" placeholder=""></td>
+                      </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="animated-separator"></div>
+            </div>
+          `;
+            return html;
+        }
+
+        function addTeacherSchedulePair(animate = true) {
+            if (pairCounter >= MAX_PAIRS) {
+                alert('⚠️ ' + (currentLang === 'en' ? 'Maximum of 12 pairs reached!' : currentLang === 'fr' ?
+                    'Maximum de 12 paires atteint !' : 'تم الوصول إلى الحد الأقصى: 12 زوج جداول!'));
+                return;
+            }
+            pairCounter++;
+            const container = document.getElementById('teacherSchedulePairs');
+            const pairHTML = createTeacherSchedulePairHTML(pairCounter);
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = pairHTML;
+            const pairElement = tempDiv.firstElementChild;
+            if (animate) {
+                pairElement.style.opacity = '0';
+                pairElement.style.transform = 'translateY(20px)';
+                pairElement.style.transition = 'all 0.5s ease';
+            }
+            container.appendChild(pairElement);
+            if (animate) {
+                requestAnimationFrame(() => {
+                    pairElement.style.opacity = '1';
+                    pairElement.style.transform = 'translateY(0)';
+                });
+            }
+            updateGlobalAddBtnVisibility();
+        }
+
+        function deletePair(pairId) {
+            const pair = document.getElementById(pairId);
+            if (!pair) return;
+            // Count current pairs
+            const allPairs = document.querySelectorAll('.teacher-schedule-pair');
+            if (allPairs.length <= 1) {
+                alert('⚠️ ' + (currentLang === 'en' ? 'Cannot delete the last pair!' : currentLang === 'fr' ?
+                    'Impossible de supprimer la dernière paire !' : 'لا يمكن حذف آخر زوج جداول!'));
+                return;
+            }
+            pair.style.opacity = '0';
+            pair.style.transform = 'scale(0.95)';
+            pair.style.transition = 'all 0.4s ease';
+            setTimeout(() => {
+                pair.remove();
+                renumberPairs();
+                updateGlobalAddBtnVisibility();
+            }, 400);
+        }
+
+        function renumberPairs() {
+            const allPairs = document.querySelectorAll('.teacher-schedule-pair');
+            allPairs.forEach((pair, idx) => {
+                const newIndex = idx + 1;
+                const oldId = pair.id;
+                const newId = 'pair_' + newIndex;
+                pair.id = newId;
+                // Update delete button onclick
+                const delBtn = pair.querySelector('.delete-btn');
+                if (delBtn) delBtn.setAttribute('onclick', `deletePair('${newId}')`);
+                // Update teacher photo IDs
+                const photoImg = pair.querySelector('img[id^="teacherPhotoImg_"]');
+                const photoPlaceholder = pair.querySelector('span[id^="teacherPhotoPlaceholder_"]');
+                const photoInput = pair.querySelector('input[onchange^="handleTeacherPhoto"]');
+                if (photoImg) photoImg.id = 'teacherPhotoImg_' + newId;
+                if (photoPlaceholder) photoPlaceholder.id = 'teacherPhotoPlaceholder_' + newId;
+                if (photoInput) photoInput.setAttribute('onchange', `handleTeacherPhoto(event, '${newId}')`);
+                // Update badge numbers in titles
+                const badges = pair.querySelectorAll('.section-title span[style*="color:var(--accent)"]');
+                badges.forEach(b => { b.textContent = '#' + newIndex; });
+            });
+            pairCounter = document.querySelectorAll('.teacher-schedule-pair').length;
+        }
+
+        function updateGlobalAddBtnVisibility() {
+            const btn = document.getElementById('globalAddBtn');
+            const currentCount = document.querySelectorAll('.teacher-schedule-pair').length;
+            if (currentCount >= MAX_PAIRS) {
+                btn.style.opacity = '0.4';
+                btn.style.pointerEvents = 'none';
+                btn.title = 'تم الوصول للحد الأقصى';
+            } else {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+                btn.title = 'إضافة زوج جداول';
+            }
+        }
+
+        // ==================== CONTROL PANEL ACTIONS ====================
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        function saveAllData() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            const t = translations[currentLang];
+            loadingText.textContent = t['loadingSave'] || 'جاري الحفظ...';
+            loadingOverlay.classList.add('show');
+
+            // Collect all data
+            const data = {
+                institutionLogo: document.getElementById('institutionLogoImg').src || '',
+                inspectorName: document.getElementById('inspectorName').value,
+                directorName: document.getElementById('directorName').value,
+                institutionName: document.getElementById('institutionName').value,
+                systemSelect: document.getElementById('systemSelect').value,
+                levelSelect: document.getElementById('levelSelect').value,
+                subjectSelect: document.getElementById('subjectSelect').value,
+                subjectOfficer: document.getElementById('subjectOfficer').value,
+                pairs: [],
+                theme: currentTheme,
+                lang: currentLang,
+                pairCount: pairCounter
+            };
+
+            document.querySelectorAll('.teacher-schedule-pair').forEach(pair => {
+                const pairData = {
+                    id: pair.id,
+                    teacherPhoto: (pair.querySelector('img[id^="teacherPhotoImg_"]')?.src) || '',
+                    teacherName: pair.querySelector('.teacher-name')?.value || '',
+                    birthDate: pair.querySelector('.teacher-birthdate')?.value || '',
+                    firstAppointment: pair.querySelector('.teacher-firstappt')?.value || '',
+                    category: pair.querySelector('.category-select')?.value || '',
+                    qualification: pair.querySelector('.qualification-select')?.value || '',
+                    gradeNumber: pair.querySelector('.grade-select')?.value || '',
+                    gradeDate: pair.querySelector('.teacher-gradedate')?.value || '',
+                    rank: pair.querySelector('.rank-select')?.value || '',
+                    lastInspection: pair.querySelector('.teacher-lastinsp')?.value || '',
+                    score: pair.querySelector('.teacher-score')?.value || '',
+                    scheduleCells: Array.from(pair.querySelectorAll('.sched-cell')).map(cell => cell.value)
+                };
+                data.pairs.push(pairData);
+            });
+
+            localStorage.setItem('platformData', JSON.stringify(data));
+
+            setTimeout(() => {
+                loadingOverlay.classList.remove('show');
+                alert('✅ ' + (currentLang === 'en' ? 'Data saved successfully!' : currentLang === 'fr' ?
+                    'Données sauvegardées avec succès !' : 'تم حفظ البيانات بنجاح!'));
+            }, 1000);
+        }
+
+        function loadAllData() {
+            const saved = localStorage.getItem('platformData');
+            if (!saved) return;
+            try {
+                const data = JSON.parse(saved);
+                // Restore institution data
+                if (data.institutionLogo) {
+                    document.getElementById('institutionLogoImg').src = data.institutionLogo;
+                    document.getElementById('institutionLogoImg').style.display = 'block';
+                    document.querySelector('#institutionLogoWrap .logo-upload-placeholder').style.display = 'none';
+                }
+                document.getElementById('inspectorName').value = data.inspectorName || '';
+                document.getElementById('directorName').value = data.directorName || '';
+                document.getElementById('institutionName').value = data.institutionName || '';
+                document.getElementById('systemSelect').value = data.systemSelect || 'داخلي';
+                document.getElementById('levelSelect').value = data.levelSelect || 'ابتدائي';
+                document.getElementById('subjectSelect').value = data.subjectSelect || 'اللغة العربية';
+                document.getElementById('subjectOfficer').value = data.subjectOfficer || '';
+
+                // Restore theme
+                if (data.theme && data.theme !== 'default') {
+                    const themeDot = document.querySelector(`.theme-dot[data-theme="${data.theme}"]`);
+                    if (themeDot) switchTheme(data.theme, themeDot);
+                }
+                // Restore language
+                if (data.lang && data.lang !== 'ar') {
+                    const langBtn = document.querySelector(`.lang-btn[data-lang="${data.lang}"]`);
+                    if (langBtn) switchLanguage(data.lang, langBtn);
+                }
+
+                // Restore pairs
+                const container = document.getElementById('teacherSchedulePairs');
+                container.innerHTML = '';
+                pairCounter = 0;
+                if (data.pairs && data.pairs.length > 0) {
+                    data.pairs.forEach((pairData, idx) => {
+                        if (idx >= MAX_PAIRS) return;
+                        pairCounter++;
+                        const pairHTML = createTeacherSchedulePairHTML(pairCounter);
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = pairHTML;
+                        const pairElement = tempDiv.firstElementChild;
+                        pairElement.id = pairData.id || ('pair_' + pairCounter);
+                        container.appendChild(pairElement);
+
+                        // Restore teacher photo
+                        if (pairData.teacherPhoto) {
+                            const img = pairElement.querySelector('img[id^="teacherPhotoImg_"]');
+                            const placeholder = pairElement.querySelector(
+                                'span[id^="teacherPhotoPlaceholder_"]');
+                            if (img) {
+                                img.src = pairData.teacherPhoto;
+                                img.style.display = 'block';
+                            }
+                            if (placeholder) placeholder.style.display = 'none';
+                        }
+                        // Restore teacher fields
+                        const fields = [
+                            { selector: '.teacher-name', value: pairData.teacherName },
+                            { selector: '.teacher-birthdate', value: pairData.birthDate },
+                            { selector: '.teacher-firstappt', value: pairData.firstAppointment },
+                            { selector: '.category-select', value: pairData.category },
+                            { selector: '.qualification-select', value: pairData.qualification },
+                            { selector: '.grade-select', value: pairData.gradeNumber },
+                            { selector: '.teacher-gradedate', value: pairData.gradeDate },
+                            { selector: '.rank-select', value: pairData.rank },
+                            { selector: '.teacher-lastinsp', value: pairData.lastInspection },
+                            { selector: '.teacher-score', value: pairData.score },
+                        ];
+                        fields.forEach(f => {
+                            const el = pairElement.querySelector(f.selector);
+                            if (el && f.value) el.value = f.value;
+                        });
+                        // Restore schedule cells
+                        if (pairData.scheduleCells && Array.isArray(pairData.scheduleCells)) {
+                            const cells = pairElement.querySelectorAll('.sched-cell');
+                            cells.forEach((cell, i) => {
+                                if (i < pairData.scheduleCells.length) cell.value =
+                                    pairData.scheduleCells[i] || '';
+                            });
+                        }
+                    });
+                }
+                pairCounter = document.querySelectorAll('.teacher-schedule-pair').length;
+                if (pairCounter === 0) {
+                    addTeacherSchedulePair(false);
+                }
+                updateGlobalAddBtnVisibility();
+                renumberPairs();
+            } catch (e) {
+                console.error('Error loading saved data:', e);
+            }
+        }
+
+        function clearAllData() {
+            const t = translations[currentLang];
+            const confirmMsg = currentLang === 'en' ? 'Are you sure you want to clear ALL data?' :
+                currentLang === 'fr' ? 'Êtes-vous sûr de vouloir effacer TOUTES les données ?' :
+                'هل أنت متأكد من مسح جميع البيانات؟';
+            if (!confirm('⚠️ ' + confirmMsg)) return;
+
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            loadingText.textContent = t['loadingClear'] || 'جاري المسح...';
+            loadingOverlay.classList.add('show');
+
+            setTimeout(() => {
+                // Clear institution fields
+                document.getElementById('inspectorName').value = '';
+                document.getElementById('directorName').value = '';
+                document.getElementById('institutionName').value = '';
+                document.getElementById('systemSelect').selectedIndex = 0;
+                document.getElementById('levelSelect').selectedIndex = 0;
+                document.getElementById('subjectSelect').selectedIndex = 0;
+                document.getElementById('subjectOfficer').value = '';
+                // Clear institution logo
+                document.getElementById('institutionLogoImg').src = '';
+                document.getElementById('institutionLogoImg').style.display = 'none';
+                document.querySelector('#institutionLogoWrap .logo-upload-placeholder').style.display = '';
+                document.getElementById('institutionLogoInput').value = '';
+
+                // Clear all pairs
+                const container = document.getElementById('teacherSchedulePairs');
+                container.innerHTML = '';
+                pairCounter = 0;
+                addTeacherSchedulePair(false);
+                updateGlobalAddBtnVisibility();
+
+                // Clear localStorage
+                localStorage.removeItem('platformData');
+
+                loadingOverlay.classList.remove('show');
+                alert('✅ ' + (currentLang === 'en' ? 'All data cleared!' : currentLang === 'fr' ?
+                    'Toutes les données sont effacées !' : 'تم مسح جميع البيانات بنجاح!'));
+            }, 800);
+        }
+
+        function printPage() {
+            window.print();
+        }
+
+        function initiateClose() {
+            const closeOverlay = document.getElementById('closeOverlay');
+            const countdownEl = document.getElementById('closeCountdown');
+            const t = translations[currentLang];
+            document.querySelector('#closeOverlay .close-message').textContent = t['closeMessage'] ||
+                'سيتم الإغلاق خلال ثوانٍ...';
+            closeOverlay.classList.add('show');
+            let count = 5;
+            countdownEl.textContent = count;
+            if (closeTimerInterval) clearInterval(closeTimerInterval);
+            closeTimerInterval = setInterval(() => {
+                count--;
+                countdownEl.textContent = count;
+                if (count <= 0) {
+                    clearInterval(closeTimerInterval);
+                    closeTimerInterval = null;
+                    closeOverlay.classList.remove('show');
+                    // Attempt to close
+                    try {
+                        window.open('', '_self', '');
+                        window.close();
+                    } catch (e) {
+                        // Fallback
+                        document.body.innerHTML =
+                            '<div style="text-align:center;padding:60px;font-family:Almarai,sans-serif;"><h2>👋 تمت محاولة الإغلاق</h2><p>يمكنك إغلاق النافذة يدوياً.</p></div>';
+                    }
+                }
+            }, 1000);
+        }
+
+        // ==================== INITIALIZATION ====================
+        // Load saved preferences on startup
+        (function initPreferences() {
+            const savedTheme = localStorage.getItem('platformTheme');
+            if (savedTheme && savedTheme !== 'default') {
+                const themeDot = document.querySelector(`.theme-dot[data-theme="${savedTheme}"]`);
+                if (themeDot) switchTheme(savedTheme, themeDot);
+            }
+            const savedLang = localStorage.getItem('platformLang');
+            if (savedLang && savedLang !== 'ar') {
+                const langBtn = document.querySelector(`.lang-btn[data-lang="${savedLang}"]`);
+                if (langBtn) switchLanguage(savedLang, langBtn);
+            }
+        })();
+    </script>
+</body>
+</html>
